@@ -11,65 +11,81 @@ public class Stats : MonoBehaviour
     public int lvlUpPrice = 10;
     public int lvlUps = 0;
 
-    public int Atk = 5;
-    public int Wit = 5;
-    public int Mgc = 5;
-    public int Spd = 5;
+    public int Fitness = 5;
+    public int Stamina = 5;
+    public int Perseverance = 5;
+    public int Willpower = 5;
+
+    public float physDmgMulti = 1;
+    public float physDmgMultiGrowRate = 0.05f;
+    public float mgcDmgMulti = 1;
+    public float mgcDmgMultiGrowRate = 0.05f;
+
+    public float movespeedMulti = 1;
+    public float movespeedMultiGrowRate = 0.1f;
 
     public int Health;
     public int MaxHealth;
     public int healthRecovery;
     public int healthRecoveryRate = 1;
+    public int HealthRecoveryGrowRate = 1;
 
     public int Mp;
     public int maxMp;
     public int manaRecoveryRate = 1;
+    public int manaRecoveryGrowRate = 1;
 
     public int armour = 0;
     public int block = 0;
     public int blockDecayRate = 5;
 
+    public List<spell> activeSpells;
+
     private void Start()
     {
-        MaxHealth = 2 * Wit;
+        MaxHealth = 2 * Stamina;
         Health = MaxHealth;
-        maxMp = Mgc;
+        maxMp = Perseverance;
         Mp = maxMp;
     }
 
-    public void upAtk()
+    public void upFit()
     {
-        if (score >= lvlUpPrice)
+        if (lvlUps >= 0)
         {
-            Atk++;
+            Fitness++;
+            lvlUps--;
         }
     }
 
     public void upWit()
     {
-        if (score >= lvlUpPrice)
+        if (lvlUps >= 0)
         {
-            Wit++;
+            Stamina++;
             MaxHealth = MaxHealth + 1;
             Health += 2;
+            lvlUps--;
         }
     }
 
     public void upMgc()
     {
-        if (score >= lvlUpPrice)
+        if (lvlUps > 0)
         {
-            Mgc++;
+            Perseverance++;
             maxMp += 2;
             Mp = maxMp;
+            lvlUps--;
         }
     }
 
     public void upSpd()
     {
-        if (score >= lvlUpPrice)
+        if (lvlUps > 0)
         {
-            Spd++;
+            Willpower++;
+            lvlUps--;
         }
     }
 
@@ -78,6 +94,7 @@ public class Stats : MonoBehaviour
         if(score >= lvlUpPrice)
         {
             lvl++;
+            lvlUps++;
             score -= lvlUpPrice;
             lvlUpPrice += (int)(lvlUpPrice * 0.2f);
         }
@@ -92,13 +109,18 @@ public class Stats : MonoBehaviour
             Health = MaxHealth;
         }
 
+        if(block > 0)
+        {
+            block -= blockDecayRate;
+        }
+
         if(Health <= 0)
         {
             umrzyj();
         }
     }
 
-    public void umrzyj()
+    public virtual void umrzyj()
     {
         //if(!isPlayer)
         //{
