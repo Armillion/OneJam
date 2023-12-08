@@ -17,8 +17,10 @@ public class Stats : MonoBehaviour
     public int Perseverance = 5;
     public int Willpower = 5;
 
+    public float physDamage = 5;
     public float physDmgMulti = 1;
     public float physDmgMultiGrowRate = 0.05f;
+    public float mgcDamage = 10;
     public float mgcDmgMulti = 1;
     public float mgcDmgMultiGrowRate = 0.05f;
 
