@@ -9,6 +9,7 @@ public class Stats : MonoBehaviour
     public int lvl = 1;
     public int score = 0;
     public int lvlUpPrice = 10;
+    public int lvlUps = 0;
 
     public int Atk = 5;
     public int Wit = 5;
@@ -17,20 +18,24 @@ public class Stats : MonoBehaviour
 
     public int Health;
     public int MaxHealth;
+    public int healthRecoery;
+    public int healthRecoeryRate = 1;
 
     public int Mp;
     public int maxMp;
+    public int manaRecoveryRate = 1;
+
+    public int armour = 0;
+    public int block = 0;
+    public int blockDecayRate = 5;
 
     public bool isPlayer = true;
 
     public List<GameObject> drops;
     public float drapchance = 0.25f;
 
-    public int highScore = 0;
     public GameObject deathScreen;
-    public Text score_text;
-    public Text highScore_text;
-
+    
     public Text hp_text;
     public Text mp_text;
     public Text scr_text;
@@ -43,8 +48,8 @@ public class Stats : MonoBehaviour
 
     public GameObject deathObject;
 
-    playerMovement movement;
-    Attack attack;
+    private GameObject player;
+    private Stats playerStats;
 
     private void Start()
     {
@@ -53,17 +58,17 @@ public class Stats : MonoBehaviour
         maxMp = Mgc;
         Mp = maxMp;
 
-        highScore = PlayerPrefs.GetInt("Highscore", 0);
-
-
-        if(isPlayer)
-        {
-            movement = GetComponent<playerMovement>();
-            attack = GetComponent<Attack>();
-        }
+        player = GameObject.FindWithTag("Player");
+        playerStats = player.GetComponent<Stats>();
     }
 
-    
+    public void takeDamage(int damage)
+    {
+        Health -= damage;
+        healthRecoery = Health + damage;
+
+        //TODO: play anims
+    }
 
     public void upAtk()
     {
@@ -73,7 +78,6 @@ public class Stats : MonoBehaviour
             lvl++;
             score -= lvlUpPrice;
             lvlUpPrice += (int)(lvlUpPrice * 0.2f);
-
         }
     }
 
@@ -114,36 +118,24 @@ public class Stats : MonoBehaviour
         }
     }
 
+    public void updateUI()
+    {
+        hp_text.text = Health.ToString();
+        mp_text.text = Mp.ToString();
+        scr_text.text = score.ToString();
+        lvl_text.text = lvl.ToString();
+        lvlUp_text.text = lvlUpPrice.ToString();
+        atk_text.text = Atk.ToString();
+        wit_text.text = Wit.ToString();
+        mgc_text.text = Mgc.ToString();
+        spd_text.text = Spd.ToString();
+    }
+
     private void Update()
     {
-        if (isPlayer)
+        if(score >= lvlUpPrice)
         {
-            hp_text.text = Health.ToString();
-            mp_text.text = Mp.ToString();
-            scr_text.text = score.ToString();
-            lvl_text.text = lvl.ToString();
-            lvlUp_text.text = lvlUpPrice.ToString();
-            atk_text.text = Atk.ToString();
-            wit_text.text = Wit.ToString();
-            mgc_text.text = Mgc.ToString();
-            spd_text.text = Spd.ToString();
-        }
 
-        if(Input.GetButtonDown("UpgradeAtk"))
-        {
-            upAtk();
-        }
-        if(Input.GetButtonDown("UpgradeWit"))
-        {
-            upWit();
-        }
-        if(Input.GetButtonDown("UpgradeMgc"))
-        {
-            upMgc();
-        }
-        if(Input.GetButtonDown("UpgradeSpd"))
-        {
-            upSpd();
         }
 
         if(Health <= 0)
@@ -157,7 +149,7 @@ public class Stats : MonoBehaviour
         if(!isPlayer)
         {
             Instantiate(deathObject, transform.position, Quaternion.identity);
-            GameObject.FindWithTag("Player").GetComponent<Stats>().score += (Atk + Mgc + Wit + Spd) / 2;
+            playerStats.score += (Atk + Mgc + Wit + Spd) / 2;
         }
         if(Random.Range(0,100) <= drapchance*100 && !isPlayer)
         {
@@ -166,13 +158,7 @@ public class Stats : MonoBehaviour
         
         if(isPlayer)
         {
-            movement.enabled = false;
-            attack.enabled = false;
             deathScreen.SetActive(true);
-            if(score > highScore)
-                PlayerPrefs.SetInt("Highscore",score);
-            score_text.text = "Your score: " + score.ToString();
-            highScore_text.text = "Highest score: " + highScore.ToString();
             this.enabled = false;
         }
         else

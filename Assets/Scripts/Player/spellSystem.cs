@@ -26,7 +26,6 @@ public class spellSystem : MonoBehaviour
 
     public GameObject projectile;
     GameObject proj;
-    playerMovement movement;
 
     Stats[] przeciwnicy;
 
@@ -47,9 +46,7 @@ public class spellSystem : MonoBehaviour
     void Start()
     {
         statystyki = GetComponent<Stats>();
-        movement = GetComponent<playerMovement>();
-        renderer = movement.render;
-
+        
         firstSpellImg.enabled = false;
         secondSpellImg.enabled = false;
         thirdSpellImg.enabled = false;
@@ -65,15 +62,6 @@ public class spellSystem : MonoBehaviour
             heal_fx.GetComponent<SpriteRenderer>().enabled = true;
             statystyki.Health = statystyki.MaxHealth;
             statystyki.Mp -= firstSpellCost;
-            if(movement.dir.x >0)
-            {
-                renderer.sprite = movement.attackAnims[4];
-            }
-            else
-            {
-                renderer.sprite = movement.attackAnims[5];
-            }
-            movement.animationTimer = 0f;
         }
 
         if (Input.GetButtonDown("Spell2") && secondSpellUnlocked && (statystyki.Mp >= secondSpellCost) && !secondSpellActive)
@@ -83,47 +71,16 @@ public class spellSystem : MonoBehaviour
             secondSpellActive = true;
             pomocnicza = statystyki.Health;
             statystyki.Mp -= secondSpellCost;
-            if (movement.dir.x > 0)
-            {
-                renderer.sprite = movement.attackAnims[4];
-            }
-            else
-            {
-                renderer.sprite = movement.attackAnims[5];
-            }
-            movement.animationTimer = 0f;
         }
 
         if (Input.GetButtonDown("Spell3") && thirdSpellUnlocked && (statystyki.Mp >= thirdSpellCost))
         {
             proj = Instantiate(projectile, transform.position, Quaternion.identity);
-            proj.GetComponent<projectileScript>().targetPlayer = false;
-            proj.GetComponent<projectileScript>().dir = movement.dir;
-            proj.GetComponent<projectileScript>().dmg = (int)statystyki.Mgc/2;
-            proj.GetComponent<projectileScript>().speed = statystyki.Mgc/3;
-            statystyki.Mp -= thirdSpellCost;
-
-            if (movement.dir.x > 0)
-            {
-                renderer.sprite = movement.attackAnims[4];
-            }
-            else
-            {
-                renderer.sprite = movement.attackAnims[5];
-            }
-            movement.animationTimer = 0f;
+            
         }
         if (Input.GetButtonDown("Spell4") && fourthSpellUnlocked && (statystyki.Mp >= forthSpellCost))
         {
-            if (movement.dir.x > 0)
-            {
-                renderer.sprite = movement.attackAnims[4];
-            }
-            else
-            {
-                renderer.sprite = movement.attackAnims[5];
-            }
-            movement.animationTimer = 0f;
+           
 
             for (int i = 0; i < 5; i++)
             {
