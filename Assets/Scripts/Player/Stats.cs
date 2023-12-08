@@ -18,8 +18,8 @@ public class Stats : MonoBehaviour
 
     public int Health;
     public int MaxHealth;
-    public int healthRecoery;
-    public int healthRecoeryRate = 1;
+    public int healthRecovery;
+    public int healthRecoveryRate = 1;
 
     public int Mp;
     public int maxMp;
@@ -29,45 +29,12 @@ public class Stats : MonoBehaviour
     public int block = 0;
     public int blockDecayRate = 5;
 
-    public bool isPlayer = true;
-
-    public List<GameObject> drops;
-    public float drapchance = 0.25f;
-
-    public GameObject deathScreen;
-    
-    public Text hp_text;
-    public Text mp_text;
-    public Text scr_text;
-    public Text lvl_text;
-    public Text lvlUp_text;
-    public Text atk_text;
-    public Text wit_text;
-    public Text mgc_text;
-    public Text spd_text;
-
-    public GameObject deathObject;
-
-    private GameObject player;
-    private Stats playerStats;
-
     private void Start()
     {
         MaxHealth = 2 * Wit;
         Health = MaxHealth;
         maxMp = Mgc;
         Mp = maxMp;
-
-        player = GameObject.FindWithTag("Player");
-        playerStats = player.GetComponent<Stats>();
-    }
-
-    public void takeDamage(int damage)
-    {
-        Health -= damage;
-        healthRecoery = Health + damage;
-
-        //TODO: play anims
     }
 
     public void upAtk()
@@ -75,9 +42,6 @@ public class Stats : MonoBehaviour
         if (score >= lvlUpPrice)
         {
             Atk++;
-            lvl++;
-            score -= lvlUpPrice;
-            lvlUpPrice += (int)(lvlUpPrice * 0.2f);
         }
     }
 
@@ -88,9 +52,6 @@ public class Stats : MonoBehaviour
             Wit++;
             MaxHealth = MaxHealth + 1;
             Health += 2;
-            lvl++;
-            score -= lvlUpPrice;
-            lvlUpPrice += (int)(lvlUpPrice * 0.2f);
         }
     }
 
@@ -101,9 +62,6 @@ public class Stats : MonoBehaviour
             Mgc++;
             maxMp += 2;
             Mp = maxMp;
-            lvl++;
-            score -= lvlUpPrice;
-            lvlUpPrice += (int)(lvlUpPrice * 0.2f);
         }
     }
 
@@ -112,30 +70,26 @@ public class Stats : MonoBehaviour
         if (score >= lvlUpPrice)
         {
             Spd++;
-            lvl++;
-            score -= lvlUpPrice;
-            lvlUpPrice += (int)(lvlUpPrice * 0.2f);
         }
-    }
-
-    public void updateUI()
-    {
-        hp_text.text = Health.ToString();
-        mp_text.text = Mp.ToString();
-        scr_text.text = score.ToString();
-        lvl_text.text = lvl.ToString();
-        lvlUp_text.text = lvlUpPrice.ToString();
-        atk_text.text = Atk.ToString();
-        wit_text.text = Wit.ToString();
-        mgc_text.text = Mgc.ToString();
-        spd_text.text = Spd.ToString();
     }
 
     private void Update()
     {
         if(score >= lvlUpPrice)
         {
+            lvl++;
+            score -= lvlUpPrice;
+            lvlUpPrice += (int)(lvlUpPrice * 0.2f);
+        }
 
+        if(healthRecovery < Health)
+        {
+            Health += healthRecoveryRate;
+        }
+
+        if(Health > MaxHealth)
+        {
+            Health = MaxHealth;
         }
 
         if(Health <= 0)
@@ -146,25 +100,16 @@ public class Stats : MonoBehaviour
 
     public void umrzyj()
     {
-        if(!isPlayer)
-        {
-            Instantiate(deathObject, transform.position, Quaternion.identity);
-            playerStats.score += (Atk + Mgc + Wit + Spd) / 2;
-        }
-        if(Random.Range(0,100) <= drapchance*100 && !isPlayer)
-        {
-            Instantiate(drops[Random.Range(0, drops.Count)], transform.position, Quaternion.identity);
-        }
-        
-        if(isPlayer)
-        {
-            deathScreen.SetActive(true);
-            this.enabled = false;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        //if(!isPlayer)
+        //{
+        //    Instantiate(deathObject, transform.position, Quaternion.identity);
+        //    playerStats.score += (Atk + Mgc + Wit + Spd) / 2;
+        //}
+        //if(Random.Range(0,100) <= drapchance*100 && !isPlayer)
+        //{
+        //    Instantiate(drops[Random.Range(0, drops.Count)], transform.position, Quaternion.identity);
+        //}
+        Destroy(gameObject);
     }
 
 }
