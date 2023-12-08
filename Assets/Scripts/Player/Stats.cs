@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System;
 
 public class Stats : MonoBehaviour
 {
@@ -28,16 +29,16 @@ public class Stats : MonoBehaviour
     public int MaxHealth;
     public int healthRecovery;
     public int healthRecoveryRate = 1;
-    public int HealthRecoveryGrowRate = 1;
+    public float HealthRecoveryGrowRate = 0.5f;
 
     public int Mp;
     public int maxMp;
     public int manaRecoveryRate = 1;
-    public int manaRecoveryGrowRate = 1;
+    public float manaRecoveryGrowRate = 1;
 
     public int armour = 0;
     public int block = 0;
-    public int blockDecayRate = 5;
+    public int blockDecayRate = 4;
 
     public List<spell> activeSpells;
 
@@ -49,6 +50,22 @@ public class Stats : MonoBehaviour
         Mp = maxMp;
     }
 
+    void updateStats()
+    {
+        physDmgMulti = 1 + Fitness * physDmgMultiGrowRate;
+        mgcDmgMulti = 1 + Willpower * mgcDmgMultiGrowRate;
+
+        MaxHealth = 10 + 1 * Stamina;
+        maxMp = 5 + 2 * Perseverance;
+
+        healthRecoveryRate = (int)(1 + HealthRecoveryGrowRate * Willpower);
+        manaRecoveryRate = (int)(1 + manaRecoveryGrowRate * Perseverance);
+
+        movespeedMulti = 1 + movespeedMultiGrowRate * Fitness;
+
+        blockDecayRate = (int)Math.Pow(0.5f,(armour/5 - 2));
+    }
+
     public void upFit()
     {
         if (lvlUps >= 0)
@@ -58,23 +75,22 @@ public class Stats : MonoBehaviour
         }
     }
 
-    public void upWit()
+    public void upSta()
     {
         if (lvlUps >= 0)
         {
             Stamina++;
-            MaxHealth = MaxHealth + 1;
-            Health += 2;
+            Health += 1;
             lvlUps--;
         }
     }
 
-    public void upMgc()
+    public void upPer()
     {
         if (lvlUps > 0)
         {
             Perseverance++;
-            maxMp += 2;
+            armour++;
             Mp = maxMp;
             lvlUps--;
         }
