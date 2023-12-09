@@ -60,7 +60,7 @@ public class Stats : MonoBehaviour
         rb = gameObject.GetComponent<Rigidbody>();
     }
 
-    void updateStats()
+    public void updateStats()
     {
         physDmgMulti = 1 + Fitness * physDmgMultiGrowRate;
         mgcDmgMulti = 1 + Willpower * mgcDmgMultiGrowRate;

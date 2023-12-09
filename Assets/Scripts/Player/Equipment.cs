@@ -23,6 +23,9 @@ public class Equipment : MonoBehaviour
     [SerializeField] private GameObject itemSlotPrefab;
     [SerializeField] private GameObject invPanel;
     [SerializeField] private List<GameObject> prefabs;
+    [SerializeField] private GameObject weaponButton;
+    [SerializeField] private GameObject offhandButton;
+    [SerializeField] private GameObject armorButton;
 
     private void Awake()
     {
@@ -52,12 +55,41 @@ public class Equipment : MonoBehaviour
                 int j = i;
                 prefabs[i].GetComponent<Button>().onClick.RemoveAllListeners();
                 prefabs[i].GetComponent<Button>().onClick.AddListener(() => onClick(j));
+                prefabs[i].GetComponent<TooltipMenager>().message = items[i].descption;
             }
             else
             {
                 prefabs[i].GetComponent<Button>().onClick.RemoveAllListeners();
                 prefabs[i].GetComponent<Image>().sprite = null;
+                prefabs[i].GetComponent<TooltipMenager>().message = "";
             }
+        }
+
+        if(mainHand != null)
+        {
+            weaponButton.GetComponent<Image>().sprite = mainHand.sprite;
+        }
+        else
+        {
+            weaponButton.GetComponent<Image>().sprite = null;
+        }
+
+        if (offhand != null)
+        {
+            offhandButton.GetComponent<Image>().sprite = mainHand.sprite;
+        }
+        else
+        {
+            offhandButton.GetComponent<Image>().sprite = null;
+        }
+
+        if (armor != null)
+        {
+            armorButton.GetComponent<Image>().sprite = mainHand.sprite;
+        }
+        else
+        {
+            armorButton.GetComponent<Image>().sprite = null;
         }
     }
 
@@ -113,11 +145,54 @@ public class Equipment : MonoBehaviour
             return;
         }
 
+        playerStats.updateStats();
         updateInventory();
+    }
+
+    public void unEquipWeapon()
+    {
+        if(mainHand != null && itemCnt < backpackSize)
+        {
+            mainHand.onUnEquip(playerStats);
+            items[itemCnt] = mainHand;
+            itemCnt++;
+            mainHand = null;
+
+            playerStats.updateStats();
+            updateInventory();
+        }
+    }
+
+    public void unEquipOffhand()
+    {
+        if (offhand != null && itemCnt < backpackSize)
+        {
+            offhand.onUnEquip(playerStats);
+            items[itemCnt] = offhand;
+            itemCnt++;
+            offhand = null;
+
+            playerStats.updateStats();
+            updateInventory();
+        }
+    }
+
+    public void unEquipArmor()
+    {
+        if (armor != null && itemCnt < backpackSize)
+        {
+            armor.onUnEquip(playerStats);
+            items[itemCnt] = armor;
+            itemCnt++;
+            armor = null;
+
+            playerStats.updateStats();
+            updateInventory();
+        }
     }
 
     private void Update()
     {
-        //updateInventory();
+        updateInventory();
     }
 }

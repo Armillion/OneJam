@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: RustedSword
   m_EditorClassIdentifier: 
   sprite: {fileID: 21300000, guid: 2dde8bf2f79111741aaec1ef17c5a13c, type: 3}
+  descption: A rusted old sword. \n +2 physical damage
   damage: 2
