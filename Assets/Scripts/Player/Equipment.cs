@@ -48,14 +48,16 @@ public class Equipment : MonoBehaviour
         {
             if (items[i] != null)
             {
-                prefabs[i].GetComponent<SpriteRenderer>().sprite = items[i].sprite;
-                prefabs[i].GetComponent<Button>().onClick.AddListener(() => onClick(i));
+                prefabs[i].GetComponent<Image>().sprite = items[i].sprite;
+                int j = i;
+                prefabs[i].GetComponent<Button>().onClick.AddListener(() => onClick(j));
             }
         }
     }
 
     public void onClick(int id)
     {
+        Debug.Log(id);
         var itemType = items[id].GetType();
 
         if(itemType == typeof(Weapon))
@@ -108,6 +110,11 @@ public class Equipment : MonoBehaviour
             return;
         }
 
+        updateInventory();
+    }
+
+    private void Update()
+    {
         updateInventory();
     }
 }
