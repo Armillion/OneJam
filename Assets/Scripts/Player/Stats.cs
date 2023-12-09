@@ -44,12 +44,20 @@ public class Stats : MonoBehaviour
 
     public List<spell> activeSpells;
 
-    private void Start()
+    //physics stats
+    protected Rigidbody rb;
+    [SerializeField]
+    protected float speed;
+    public Vector2 facingDir = Vector2.right;
+
+    protected virtual void Start()
     {
         MaxHealth = 2 * Stamina;
         Health = MaxHealth;
         maxMp = Perseverance;
         Mp = maxMp;
+
+        rb = gameObject.GetComponent<Rigidbody>();
     }
 
     void updateStats()
@@ -107,7 +115,18 @@ public class Stats : MonoBehaviour
         }
     }
 
-    private void Update()
+    //movement:
+    protected virtual void Move(Vector2 move)
+    {
+        rb.AddForce(new Vector3(move.x, move.y, 0) * speed * movespeedMulti, ForceMode.Force);
+    }
+
+    protected virtual void Rotate(float angleInDegrees)
+    {
+        facingDir = RotateVector(facingDir, angleInDegrees);
+    }
+
+    protected virtual void Update()
     {
         if(score >= lvlUpPrice)
         {
@@ -152,4 +171,12 @@ public class Stats : MonoBehaviour
         Destroy(gameObject);
     }
 
+    //quality of life
+    public Vector3 RotateVector(Vector3 vector, float angleInDegrees)
+    {
+        float angleInRadians = angleInDegrees * Mathf.Deg2Rad;
+        float x = vector.x * Mathf.Cos(angleInRadians) - vector.y * Mathf.Sin(angleInRadians);
+        float y = vector.x * Mathf.Sin(angleInRadians) + vector.y * Mathf.Cos(angleInRadians);
+        return new Vector3(x, y, vector.z);
+    }
 }
