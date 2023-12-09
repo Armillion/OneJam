@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class Equipment : MonoBehaviour
 {
     //Player Stats Ref
-    private Stats playerStats;
+    [SerializeField] private PlayerStats playerStats;
 
     //Currently equipped
     public Weapon mainHand;
@@ -26,7 +26,7 @@ public class Equipment : MonoBehaviour
 
     private void Awake()
     {
-        TryGetComponent<Stats>(out Stats playerStats);
+        playerStats = GetComponent<PlayerStats>();
 
         items = new List<Item>();
         mainHand = null;
@@ -50,17 +50,20 @@ public class Equipment : MonoBehaviour
             {
                 prefabs[i].GetComponent<Image>().sprite = items[i].sprite;
                 int j = i;
+                prefabs[i].GetComponent<Button>().onClick.RemoveAllListeners();
                 prefabs[i].GetComponent<Button>().onClick.AddListener(() => onClick(j));
+            }
+            else
+            {
+                prefabs[i].GetComponent<Button>().onClick.RemoveAllListeners();
+                prefabs[i].GetComponent<Image>().sprite = null;
             }
         }
     }
 
     public void onClick(int id)
     {
-        Debug.Log(id);
-        var itemType = items[id].GetType();
-
-        if(itemType == typeof(Weapon))
+        if (items[id] is Weapon)
         {
             if(mainHand != null)
             {
@@ -72,7 +75,7 @@ public class Equipment : MonoBehaviour
             items[id] = mainHand;
             mainHand = tmp;
         }
-        else if (itemType == typeof(Offhand))
+        else if (items[id] is Offhand)
         {
             if (offhand != null)
             {
@@ -84,7 +87,7 @@ public class Equipment : MonoBehaviour
             items[id] = offhand;
             offhand = tmp;
         }
-        else if (itemType == typeof(Armor))
+        else if (items[id] is Armor)
         {
             if (armor != null)
             {
@@ -96,7 +99,7 @@ public class Equipment : MonoBehaviour
             items[id] = armor;
             armor = tmp;
         }
-        else if(itemType == typeof(Usable))
+        else if(items[id] is Usable)
         {
             ((Usable)items[id]).use(playerStats);
             for(int i = id; i < itemCnt; i++)
@@ -115,6 +118,6 @@ public class Equipment : MonoBehaviour
 
     private void Update()
     {
-        updateInventory();
+        //updateInventory();
     }
 }
