@@ -11,7 +11,7 @@ public class Rusher : Enemy
 		base.FixedUpdate();
 		//rotate towards player
 		//float dot = Vector2.Dot(facingDir, (player.transform.position - transform.position).normalized);
-		float angleDiff = Vector2.SignedAngle(facingDir, new Vector2(player.transform.position.x - transform.position.x, player.transform.position.y - transform.position.y).normalized);
+		float angleDiff = Vector2.SignedAngle(facingDir, GetNormToPlayer());
 		Debug.Log(angleDiff);
 		if (angleDiff >= 0)
 		{

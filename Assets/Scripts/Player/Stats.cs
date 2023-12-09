@@ -47,7 +47,7 @@ public class Stats : MonoBehaviour
     //physics stats
     protected Rigidbody rb;
     [SerializeField]
-    protected float speed;
+    public float speed;
     public Vector2 facingDir = Vector2.right;
 
     protected virtual void Start()
