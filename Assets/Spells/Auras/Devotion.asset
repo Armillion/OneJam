@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df98662e56fd65a489c94699bac06543, type: 3}
   m_Name: Devotion
   m_EditorClassIdentifier: 
-  intensity: 5
+  intensity: 1
